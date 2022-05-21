@@ -1,4 +1,3 @@
-require("dotenv").config();
 const debug = require("debug")("socialnetwork:database");
 const mongoose = require("mongoose");
 
