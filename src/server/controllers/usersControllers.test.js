@@ -1,13 +1,9 @@
 const bcrypt = require("bcrypt");
 const { loginUser } = require("./usersControllers");
 const User = require("../../database/models/User");
+const mockUser = require("../mocks/usersMock");
 
 const expectedToken = "userToken";
-const user = {
-  id: "1",
-  username: "maria jose",
-  password: "123456",
-};
 
 jest.mock("jsonwebtoken", () => ({
   sign: () => expectedToken,
@@ -15,9 +11,9 @@ jest.mock("jsonwebtoken", () => ({
 
 describe("Given the loginUser function", () => {
   describe("When its called with an username and password corrects", () => {
-    test("Then it should call the response method status with 201", async () => {
+    test("Then it should call the response method status with 200", async () => {
       jest.spyOn(bcrypt, "compare").mockResolvedValue(true);
-      User.findOne = jest.fn().mockResolvedValue(user);
+      User.findOne = jest.fn().mockResolvedValue(mockUser);
 
       const req = {
         body: {
@@ -34,7 +30,7 @@ describe("Given the loginUser function", () => {
       };
 
       const next = jest.fn();
-      const expectedResultvalue = 201;
+      const expectedResultvalue = 200;
 
       await loginUser(req, res, next);
 
@@ -44,7 +40,7 @@ describe("Given the loginUser function", () => {
   });
   describe("when its invked with an incorrect username", () => {
     test("then it should call next", async () => {
-      User.findOne = jest.fn().mockResolvedValue(!user);
+      User.findOne = jest.fn().mockResolvedValue(!mockUser);
 
       const req = {
         body: {
@@ -70,7 +66,7 @@ describe("Given the loginUser function", () => {
   describe("when its invked with an incorrect password", () => {
     test("then it should call next", async () => {
       jest.spyOn(bcrypt, "compare").mockResolvedValue(false);
-      User.findOne = jest.fn().mockResolvedValue(user);
+      User.findOne = jest.fn().mockResolvedValue(mockUser);
 
       const req = {
         body: {
