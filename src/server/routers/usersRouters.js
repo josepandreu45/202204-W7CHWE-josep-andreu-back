@@ -1,8 +1,15 @@
 const express = require("express");
-const { loginUser } = require("../controllers/usersControllers");
+const multer = require("multer");
+const path = require("path");
+const { loginUser, registerUser } = require("../controllers/usersControllers");
 
 const router = express.Router();
 
+const upload = multer({
+  dest: path.join("uploads", "images"),
+});
+
 router.post("/login", loginUser);
+router.post("/register", upload.single("image"), registerUser);
 
 module.exports = router;

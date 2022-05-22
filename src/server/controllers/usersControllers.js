@@ -1,5 +1,9 @@
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
+const debug = require("debug")("socialnetwork:controllers");
 const User = require("../../database/models/User");
 
 const loginUser = async (req, res, next) => {
@@ -33,4 +37,53 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { loginUser };
+const encryptPassword = (password) => bcrypt.hash(password, 10);
+
+const registerUser = async (req, res, next) => {
+  const { name, username, password } = req.body;
+  const { file } = req;
+  const user = await User.findOne({ username });
+
+  if (user) {
+    const error = new Error();
+    error.statusCode = 409;
+    error.customMessage = "this user already exists";
+
+    next(error);
+  }
+
+  const newImage = `${Date.now()}${file.originalname}`;
+
+  fs.rename(
+    path.join("uploads", "images", file.filename),
+    path.join("uploads", "images", newImage),
+    async (error) => {
+      if (error) {
+        debug("hola");
+        next(error);
+      } else {
+        debug("file renamed");
+      }
+    }
+  );
+
+  const encryptedPassword = await encryptPassword(password);
+
+  try {
+    const newUser = await User.create({
+      name,
+      username,
+      passwordd: encryptedPassword,
+      image: path.join("images", newImage),
+    });
+
+    res.status(201).json(newUser);
+  } catch {
+    const error = new Error();
+    error.statusCode = 400;
+    error.customMessage = "bad request";
+    next(error);
+  }
+};
+
+module.exports = { loginUser, registerUser };
