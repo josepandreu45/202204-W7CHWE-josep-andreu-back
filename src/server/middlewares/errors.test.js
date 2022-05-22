@@ -41,7 +41,7 @@ describe("Given the generalError function", () => {
 
       generalError(error, null, res);
 
-      expect(res.status).toBeCalledWith(expectedcode);
+      expect(res.status).toHaveBeenCalledWith(expectedcode);
     });
   });
   test("Then it should call the response method json with msg: hola", () => {
@@ -53,17 +53,17 @@ describe("Given the generalError function", () => {
 
     generalError(error, null, res);
 
-    expect(res.json).toBeCalledWith(expectedMessage);
+    expect(res.json).toHaveBeenCalledWith(expectedMessage);
   });
   describe("When its invoked with a request", () => {
-    test("Then it should call the response methot status with 400", () => {
+    test("Then it should call the response methot status with 500", () => {
       const error = new Error();
 
       const expectedcode = 500;
 
       generalError(error, null, res);
 
-      expect(res.status).toBeCalledWith(expectedcode);
+      expect(res.status).toHaveBeenCalledWith(expectedcode);
     });
   });
   test("Then it should call the response method json with msg: hola", () => {
@@ -73,6 +73,6 @@ describe("Given the generalError function", () => {
 
     generalError(error, null, res);
 
-    expect(res.json).toBeCalledWith(expectedMessage);
+    expect(res.json).toHaveBeenCalledWith(expectedMessage);
   });
 });
