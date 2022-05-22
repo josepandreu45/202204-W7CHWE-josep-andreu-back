@@ -73,7 +73,7 @@ const registerUser = async (req, res, next) => {
     const newUser = await User.create({
       name,
       username,
-      password: encryptedPassword,
+      passwordd: encryptedPassword,
       image: path.join("images", newImage),
     });
 
