@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const { compare } = require("bcrypt");
 const { loginUser } = require("./usersControllers");
 const User = require("../../database/models/User");
 
